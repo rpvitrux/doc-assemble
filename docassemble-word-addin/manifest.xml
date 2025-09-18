@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp
+    xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+    xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+    xsi:type="TaskPaneApp">
+    <Id>fabe4803-448f-4c99-8343-8bc4c6a35775</Id>
+    <Version>0.0.0.1</Version>
+    <ProviderName>docassemble</ProviderName>
+    <DefaultLocale>en-US</DefaultLocale>
+    <DisplayName DefaultValue="Docassemble" />
+    <Description DefaultValue="Connects Word to the docassemble Playground."/>
+    <IconUrl DefaultValue="https://localhost:8444/favicon.ico" />
+    <HighResolutionIconUrl DefaultValue="https://localhost:8444/favicon.ico"/>
+    <SupportUrl DefaultValue="https://docassemble.org/docs/playground.html#word%20addin"/>
+    <AppDomains>
+        <AppDomain>https://localhost:8444</AppDomain>
+        <AppDomain>docassemble.org</AppDomain>
+    </AppDomains>
+    <Hosts>
+        <Host Name="Document" />
+    </Hosts>
+    <DefaultSettings>
+        <SourceLocation DefaultValue="https://localhost:8444/officetaskpane" />
+    </DefaultSettings>
+    <Permissions>ReadWriteDocument</Permissions>
+    <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+        <Hosts>
+            <Host xsi:type="Document">
+                <DesktopFormFactor>
+                    <GetStarted>
+                        <Title resid="DA.GetStarted.Title"/>
+                        <Description resid="DA.GetStarted.Description"/>
+                        <LearnMoreUrl resid="DA.GetStarted.LearnMoreUrl"/>
+                    </GetStarted>
+                    <FunctionFile resid="DA.DesktopFunctionFile.Url" />
+                    <ExtensionPoint xsi:type="PrimaryCommandSurface">
+                        <OfficeTab id="TabHome">
+                            <Group id="DA.Group1">
+                                <Label resid="DA.Group1Label" />
+                                <Icon>
+                                    <bt:Image size="16" resid="DA.tpicon_16x16" />
+                                    <bt:Image size="32" resid="DA.tpicon_32x32" />
+                                    <bt:Image size="80" resid="DA.tpicon_80x80" />
+                                </Icon>
+                                <Control xsi:type="Button" id="DA.TaskpaneButton">
+                                    <Label resid="DA.TaskpaneButton.Label" />
+                                    <Supertip>
+                                        <Title resid="DA.TaskpaneButton.Label" />
+                                        <Description resid="DA.TaskpaneButton.Tooltip" />
+                                    </Supertip>
+                                    <Icon>
+                                        <bt:Image size="16" resid="DA.tpicon_16x16" />
+                                        <bt:Image size="32" resid="DA.tpicon_32x32" />
+                                        <bt:Image size="80" resid="DA.tpicon_80x80" />
+                                    </Icon>
+                                    <Action xsi:type="ShowTaskpane">
+                                        <TaskpaneId>ButtonId1</TaskpaneId>
+                                        <SourceLocation resid="DA.Taskpane.Url" />
+                                    </Action>
+                                </Control>
+                            </Group>
+                        </OfficeTab>
+                    </ExtensionPoint>
+                </DesktopFormFactor>
+            </Host>
+        </Hosts>
+        <Resources>
+            <bt:Images>
+                <bt:Image id="DA.tpicon_16x16" DefaultValue="https://localhost:8444/favicon.ico" />
+                <bt:Image id="DA.tpicon_32x32" DefaultValue="https://localhost:8444/favicon.ico" />
+                <bt:Image id="DA.tpicon_80x80" DefaultValue="https://localhost:8444/favicon.ico" />
+            </bt:Images>
+            <bt:Urls>
+                <bt:Url id="DA.Taskpane.Url" DefaultValue="https://localhost:8444/officetaskpane" />
+                <bt:Url id="DA.GetStarted.LearnMoreUrl" DefaultValue="https://docassemble.org/docs/playground.html#word%20addin" />
+                <bt:Url id="DA.DesktopFunctionFile.Url" DefaultValue="https://localhost:8444/officefunctionfile" />
+            </bt:Urls>
+            <bt:ShortStrings>
+                <bt:String id="DA.TaskpaneButton.Label" DefaultValue="Playground sidebar" />
+                <bt:String id="DA.Group1Label" DefaultValue="Docassemble" />
+                <bt:String id="DA.GetStarted.Title" DefaultValue="Docassemble add-in" />
+            </bt:ShortStrings>
+            <bt:LongStrings>
+                <bt:String id="DA.TaskpaneButton.Tooltip" DefaultValue="Click to open" />
+                <bt:String id="DA.GetStarted.Description" DefaultValue="You can open the Playground sidebar here" />
+            </bt:LongStrings>
+        </Resources>
+    </VersionOverrides>
+</OfficeApp>
