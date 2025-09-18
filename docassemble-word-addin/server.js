@@ -149,20 +149,14 @@ app.get('/office-auth-dialog', (req, res) => {
             <div class="container">
                 <h3>Sign in to DocAssemble</h3>
 
-                <div class="default-credentials">
-                    <strong>Default credentials:</strong><br>
-                    Email: admin@admin.com<br>
-                    Password: password
-                </div>
-
                 <div id="loginForm">
                     <div class="form-group">
                         <label class="form-label" for="email">Email</label>
-                        <input id="email" class="form-control" type="email" value="admin@admin.com" required>
+                        <input id="email" class="form-control" type="email" placeholder="Enter your email" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="password">Password</label>
-                        <input id="password" class="form-control" type="password" value="password" required>
+                        <input id="password" class="form-control" type="password" placeholder="Enter your password" required>
                     </div>
                     <div class="form-group">
                         <button id="signInBtn" class="btn" onclick="authenticateUser()">

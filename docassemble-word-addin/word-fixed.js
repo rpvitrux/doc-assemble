@@ -337,69 +337,185 @@ function insertClauseIntoDocument(clauseKey) {
 // ENHANCED INITIALIZATION
 
 function initializeEnhancedFeatures() {
-    // Add enhanced functionality to the existing DocAssemble interface
-    addTemplateCreationButton();
-    addClauseInterface();
+    // Create tabbed interface that wraps the existing DocAssemble content
+    createTabbedInterface();
 }
 
-function addTemplateCreationButton() {
-    // Add a button to the variables interface for template creation
-    const playgroundBox = document.getElementById('playgroundbox');
-    if (playgroundBox) {
-        const templateButton = document.createElement('button');
-        templateButton.textContent = 'Create Interview from Template';
-        templateButton.className = 'btn btn-success template-ui mb-3';
-        templateButton.onclick = createInterviewFromTemplate;
-
-        playgroundBox.parentNode.insertBefore(templateButton, playgroundBox);
-    }
-}
-
-function addClauseInterface() {
-    // Add clause selection interface
+function createTabbedInterface() {
+    // Find the main content area
+    const projectsDiv = document.getElementById('projectsDiv');
+    const variablesDiv = document.getElementById('variablesDiv');
     const changeServerDiv = document.getElementById('changeServerDiv');
-    if (changeServerDiv) {
-        const clauseDiv = document.createElement('div');
-        clauseDiv.className = 'clause-ui mt-3';
-        clauseDiv.innerHTML = `
-            <div class="card">
-                <div class="card-header">Legal Clause Library</div>
-                <div class="card-body">
-                    <select class="form-select clause-selector mb-2">
-                        <option value="">Select a clause to insert...</option>
-                        <option value="liability">Liability Limitation</option>
-                        <option value="confidentiality">Confidentiality</option>
-                        <option value="termination">Termination</option>
-                        <option value="dispute">Dispute Resolution</option>
-                        <option value="indemnification">Indemnification</option>
-                        <option value="force_majeure">Force Majeure</option>
-                    </select>
-                    <button class="btn btn-primary insert-clause-btn">Insert Clause</button>
-                </div>
-            </div>
-        `;
 
-        changeServerDiv.parentNode.insertBefore(clauseDiv, changeServerDiv);
+    if (!projectsDiv || !variablesDiv) return;
 
-        // Add event listener for clause insertion
-        const insertBtn = clauseDiv.querySelector('.insert-clause-btn');
-        const selector = clauseDiv.querySelector('.clause-selector');
-
-        insertBtn.addEventListener('click', function() {
-            const selectedClause = selector.value;
-            if (!selectedClause) {
-                alert('Please select a clause to insert.');
-                return;
+    // Create tab container
+    const tabContainer = document.createElement('div');
+    tabContainer.className = 'docassemble-tabs';
+    tabContainer.innerHTML = `
+        <style>
+            .docassemble-tabs {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             }
+            .tab-navigation {
+                display: flex;
+                border-bottom: 2px solid #e0e0e0;
+                margin-bottom: 20px;
+                background: #f8f9fa;
+                border-radius: 6px 6px 0 0;
+            }
+            .tab-button {
+                flex: 1;
+                padding: 12px 8px;
+                border: none;
+                background: #f8f9fa;
+                color: #666;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 500;
+                border-bottom: 3px solid transparent;
+                transition: all 0.2s;
+                text-align: center;
+            }
+            .tab-button:hover {
+                background: #e9ecef;
+                color: #333;
+            }
+            .tab-button.active {
+                background: white;
+                color: #0078d4;
+                border-bottom-color: #0078d4;
+            }
+            .tab-content {
+                display: none;
+                min-height: 400px;
+            }
+            .tab-content.active {
+                display: block;
+            }
+            .template-section, .clause-section {
+                padding: 20px;
+                background: white;
+                border-radius: 6px;
+                margin-bottom: 20px;
+            }
+            .template-button, .clause-insert-btn {
+                background-color: #0078d4;
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 4px;
+                font-size: 14px;
+                cursor: pointer;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .template-button:hover, .clause-insert-btn:hover {
+                background-color: #106ebe;
+            }
+            .clause-selector {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                margin-bottom: 15px;
+                font-size: 13px;
+            }
+            .help-text {
+                font-size: 12px;
+                color: #666;
+                text-align: center;
+                margin-top: 10px;
+            }
+        </style>
 
-            insertClauseIntoDocument(selectedClause).then(function() {
-                alert('Clause inserted successfully!');
-                selector.value = ''; // Reset selection
-            }).catch(function(error) {
-                alert('Error inserting clause: ' + error.message);
-            });
-        });
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('variables', this)">Build Template</button>
+            <button class="tab-button" onclick="switchTab('clauses', this)">Insert Clause</button>
+        </div>
+
+        <div class="tab-content active" id="variables-tab">
+            <!-- Original DocAssemble content will be moved here -->
+            <div class="template-section" style="margin-top: 20px;">
+                <button class="template-button" onclick="createInterviewFromTemplate()">
+                    Scan Document
+                </button>
+                <p class="help-text">Scan document for {{ variables }} and show results</p>
+            </div>
+        </div>
+
+        <div class="tab-content" id="clauses-tab">
+            <div class="clause-section">
+                <h4 style="margin: 0 0 15px 0; color: #333;">Legal Clause Library</h4>
+                <select class="clause-selector" id="clauseSelector">
+                    <option value="">Select a clause to insert...</option>
+                    <option value="liability">Liability Limitation</option>
+                    <option value="confidentiality">Confidentiality</option>
+                    <option value="termination">Termination</option>
+                    <option value="dispute">Dispute Resolution</option>
+                    <option value="indemnification">Indemnification</option>
+                    <option value="force_majeure">Force Majeure</option>
+                </select>
+                <button class="clause-insert-btn" onclick="insertSelectedClause()">
+                    Insert Selected Clause
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Insert the tab container before the existing content
+    projectsDiv.parentNode.insertBefore(tabContainer, projectsDiv);
+
+    // Move existing DocAssemble content into the Variables tab
+    const variablesTab = document.getElementById('variables-tab');
+
+    // Move projects div, variables div, and change server div into the Variables tab
+    variablesTab.appendChild(projectsDiv);
+    variablesTab.appendChild(variablesDiv);
+    if (changeServerDiv) {
+        variablesTab.appendChild(changeServerDiv);
     }
+
+    // Hide the interview selector in the Variables tab
+    const interviewSelector = document.getElementById('daVariables');
+    if (interviewSelector && interviewSelector.parentElement) {
+        interviewSelector.parentElement.parentElement.style.display = 'none'; // Hide the entire "Interview:" line
+    }
+
+    // Add global tab switching function
+    window.switchTab = function(tabName, buttonElement) {
+        // Hide all tab contents
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(tab => tab.classList.remove('active'));
+
+        // Remove active class from all tab buttons
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(button => button.classList.remove('active'));
+
+        // Show selected tab content
+        document.getElementById(tabName + '-tab').classList.add('active');
+
+        // Add active class to clicked tab button
+        buttonElement.classList.add('active');
+    };
+
+    // Add global clause insertion function
+    window.insertSelectedClause = function() {
+        const selector = document.getElementById('clauseSelector');
+        const selectedClause = selector.value;
+
+        if (!selectedClause) {
+            alert('Please select a clause to insert.');
+            return;
+        }
+
+        insertClauseIntoDocument(selectedClause).then(function() {
+            alert('Clause inserted successfully!');
+            selector.value = ''; // Reset selection
+        }).catch(function(error) {
+            alert('Error inserting clause: ' + error.message);
+        });
+    };
 }
 
 // Export functions for use by other scripts
