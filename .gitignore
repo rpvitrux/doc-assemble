@@ -67,3 +67,5 @@ mypy.ini
 stylelint.config.js
 .stylelintrc.json
 .sass-cache/
+.claude/
+.playwright-mcp/
